@@ -1,0 +1,24 @@
+{
+  "name": "office-map",
+  "version": "1.0.0",
+  "description": "tbd",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node ./node_modules/browser-sync/bin/browser-sync.js start --server --files *.html *.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://githib.com/greyHorseM/"
+  },
+  "keywords": [
+    "userslist"
+  ],
+  "author": "Marina Baydak",
+  "license": "ISC",
+  "devDependencies": {
+    "browser-sync": "^2.18.5",
+    "webpack-dev-server": "^2.3.0"
+  },
+  "dependencies": {}
+}
