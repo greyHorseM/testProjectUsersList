@@ -8,7 +8,19 @@
 <body>
     <div class="users-block">
         <div class="users-block__users-list"></div>
-        <div class="users-block__edit-panel"></div>
+        <div class="users-block__edit-panel">
+            <form name="user-data">
+                <fieldset>
+                <legend>Данные пользователя</legend>
+                    <label>Имя</label>
+                    <input type="text" id="name" readonly>
+                    <label>Фамилия</label>
+                    <input type="text" id="surname" readonly>
+                    <input type="button" id="edit-button" value="Редактировать">
+                    <input type="button" id="save-button" value="Сохранить" disabled>
+                </fieldset>
+            </form>
+        </div>
     </div>
     <script src="public/app.js"></script>
 </body>
