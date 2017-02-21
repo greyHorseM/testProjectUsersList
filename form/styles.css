@@ -1,0 +1,18 @@
+.users-block{
+    display: flex;
+}
+
+.users-block__user-form{
+    flex-grow: 4;
+    background-color: blanchedalmond;
+}
+
+.users-block__user-form form fieldset{
+    display: flex;
+    justify-content: flex-start;
+    flex-direction: column;
+}
+
+.readonly{
+
+}

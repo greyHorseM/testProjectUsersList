@@ -1,0 +1,26 @@
+.users-block{
+    display: flex;
+}
+
+.users-block__users-list{
+    background-color: lightgray;
+    flex-grow: 1;
+}
+
+
+.users-block__users-list li{
+    list-style: none;
+    padding: 5px;
+}
+
+.users-block__users-list ul{
+    padding-left: 0px;
+}
+
+.selected{
+    background-color: royalblue;
+}
+
+.readonly{
+
+}

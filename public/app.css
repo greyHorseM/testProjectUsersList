@@ -1,0 +1,46 @@
+.users-block{
+    display: flex;
+}
+
+.users-block__users-list{
+    background-color: lightgray;
+    flex-grow: 1;
+}
+
+
+.users-block__users-list li{
+    list-style: none;
+    padding: 5px;
+}
+
+.users-block__users-list ul{
+    padding-left: 0px;
+}
+
+.selected{
+    background-color: royalblue;
+}
+
+.readonly{
+
+}
+.users-block{
+    display: flex;
+}
+
+.users-block__user-form{
+    flex-grow: 4;
+    background-color: blanchedalmond;
+}
+
+.users-block__user-form form fieldset{
+    display: flex;
+    justify-content: flex-start;
+    flex-direction: column;
+}
+
+.readonly{
+
+}
+
+/*# sourceMappingURL=app.css.map*/

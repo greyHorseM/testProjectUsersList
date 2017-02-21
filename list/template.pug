@@ -1,0 +1,5 @@
+.users-block__users-list
+    input(type='button' value='Добавить')
+    ul
+        each item in items
+            li(id=`${item.id}`)= `${item.name} ${item.surname}`

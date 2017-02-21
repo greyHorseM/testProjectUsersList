@@ -1,7 +1,24 @@
 'use strict';
 
+import UsersList from './list/usersList';
+import UserForm from './form/userForm';
 import {users} from './db/data';
 
+let container = document.querySelector('.users-block');
+
+let usersList = new UsersList({users: users});
+container.appendChild(usersList.getElem());
+
+let userForm = new UserForm({users: users});
+container.appendChild(userForm.getElem());
+
+usersList.getElem().addEventListener('user-select', function(event) {
+    let selectedUser = event.detail.value;
+    userForm.loadUserData(selectedUser);
+});
+
+
+/*
 class User{
     constructor({users}){
         this.users = users;
@@ -45,18 +62,18 @@ class User{
     loadUserData(e){
         this.clearEditData();
         //getting nodes
-        //let form = document.forms[0];
-        //this.inputNameNode = document.body.querySelector('#name');
         let userId = e.target.getAttribute('id');
         //getting user object from db
         this.currentUser = this.users.find(function(element, index, array){
             if (element.id == userId) return element;
         });
         //put user data to DOM
+        this.renderDOM(this.currentUser);
+    }
+
+    renderDOM(){
         this.inputNameNode.setAttribute("value", this.currentUser.name);
         this.inputSurnameNode.setAttribute("value", this.currentUser.surname);
-        //let containerEditPanel = document.querySelector('.users-block__edit-panel');
-        //containerEditPanel.appendChild(label);
     }
 
     clearEditData(){
@@ -71,7 +88,7 @@ class User{
         }
     }
 
-    updateUserData(){
+    updateUserData(e){
         this.saveButton.disabled = true;
         for (let input of this.inputs){
             input.readOnly = true;
@@ -82,7 +99,7 @@ class User{
             this.currentUser[inputName] = '999';
             console.log(this.currentUser[inputName]);
         }
-        this.loadUserData();
+        this.renderDOM(this.currentUser);
     }
 
     markAsChanged(e){
@@ -95,3 +112,4 @@ class User{
 let usersDom = new User({
     users: users
 });
+*/

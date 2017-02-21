@@ -1,0 +1,13 @@
+.users-block__user-form
+    form(name = 'user-data')
+        fieldset
+            legend Данные пользователя
+            label Имя
+            input#fullName(type='text' readonly value=`${item.name}`)
+            label Фамилия
+            input#email(type='text' readonly value=`${item.surname}`)
+            input(type='button' value='Редактировать')
+            input(type='button' value='Сохранить' disabled)
+
+
+

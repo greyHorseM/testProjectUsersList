@@ -1,3 +1,6 @@
+const ExtractTextPlugin = require("extract-text-webpack-plugin");
+const path = require('path');
+
 module.exports = {
     entry: {
         app: './app'
@@ -22,7 +25,29 @@ module.exports = {
                 options: {
                     presets: ['es2015']
                 }
+            },
+            {
+                test: /\.pug$/,
+                loader: "pug-loader"
+            },
+            {
+                test: /\.css$/,
+                loader: ExtractTextPlugin.extract({
+                    use: 'css-loader'
+                })
             }
         ]
-    }
+    },
+
+    node: {
+        fs: "empty"
+    },
+
+    plugins: [
+        new ExtractTextPlugin({
+            filename: '[name].css',
+            allChunks: true
+        })
+    ]
+
 };
