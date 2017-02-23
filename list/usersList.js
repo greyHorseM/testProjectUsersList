@@ -19,7 +19,13 @@ export default class UsersList {
         }
         liSelectedUser.classList.add('selected');
         let userId = liSelectedUser.getAttribute('id');
-        let selectedUser = this._users[userId];
+        //let selectedUser = this._users[userId];
+
+        //
+        let selectedUser = this._users.find(function(element, index, array){
+            if (liSelectedUser.id == element.id) return element;
+        });
+        console.log(selectedUser);
 
         this._elem.dispatchEvent(new CustomEvent('user-select',{
             bubbles: true,

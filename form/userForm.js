@@ -5,7 +5,7 @@ import './styles.css';
 export default class UserForm{
     constructor({users}){
         this._users = users;
-        this._currentUser = users[0];
+        this._currentUser = {};
         this._render = this._render.bind(this);
     }
 
@@ -18,15 +18,12 @@ export default class UserForm{
     }
 
     getElem(){
-        if (!this.elem){
-            this._render();
-        }
+        this._render();
         return this.elem;
     }
 
     loadUserData(selectedUser){
         this._currentUser = selectedUser;
-        this._render();
     }
 
 }

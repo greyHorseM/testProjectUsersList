@@ -374,7 +374,7 @@ let users = [
 class UserForm{
     constructor({users}){
         this._users = users;
-        this._currentUser = users[0];
+        this._currentUser = {};
         this._render = this._render.bind(this);
     }
 
@@ -387,15 +387,12 @@ class UserForm{
     }
 
     getElem(){
-        if (!this.elem){
-            this._render();
-        }
+        this._render();
         return this.elem;
     }
 
     loadUserData(selectedUser){
         this._currentUser = selectedUser;
-        this._render();
     }
 
 }
@@ -432,7 +429,13 @@ class UsersList {
         }
         liSelectedUser.classList.add('selected');
         let userId = liSelectedUser.getAttribute('id');
-        let selectedUser = this._users[userId];
+        //let selectedUser = this._users[userId];
+
+        //
+        let selectedUser = this._users.find(function(element, index, array){
+            if (liSelectedUser.id == element.id) return element;
+        });
+        console.log(selectedUser);
 
         this._elem.dispatchEvent(new CustomEvent('user-select',{
             bubbles: true,
@@ -537,11 +540,14 @@ let usersList = new __WEBPACK_IMPORTED_MODULE_0__list_usersList__["a" /* default
 container.appendChild(usersList.getElem());
 
 let userForm = new __WEBPACK_IMPORTED_MODULE_1__form_userForm__["a" /* default */]({users: __WEBPACK_IMPORTED_MODULE_2__db_data__["a" /* users */]});
-container.appendChild(userForm.getElem());
+let divUserForm = userForm.getElem();
+container.appendChild(divUserForm);
 
 usersList.getElem().addEventListener('user-select', function(event) {
+    divUserForm.remove();
     let selectedUser = event.detail.value;
     userForm.loadUserData(selectedUser);
+    container.appendChild(userForm.getElem());
 });
 
 

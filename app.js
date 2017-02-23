@@ -10,11 +10,14 @@ let usersList = new UsersList({users: users});
 container.appendChild(usersList.getElem());
 
 let userForm = new UserForm({users: users});
-container.appendChild(userForm.getElem());
+let divUserForm = userForm.getElem();
+container.appendChild(divUserForm);
 
 usersList.getElem().addEventListener('user-select', function(event) {
+    divUserForm.remove();
     let selectedUser = event.detail.value;
     userForm.loadUserData(selectedUser);
+    container.appendChild(userForm.getElem());
 });
 
 
