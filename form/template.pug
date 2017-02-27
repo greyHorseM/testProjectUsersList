@@ -2,12 +2,9 @@
     form(name = 'user-data')
         fieldset
             legend Данные пользователя
-            label Имя
-            input#fullName(type='text' readonly value=`${item.name}`)
-            label Фамилия
-            input#email(type='text' readonly value=`${item.surname}`)
-            input(type='button' value='Редактировать')
-            input(type='button' value='Сохранить' disabled)
-
-
-
+            label Имя и Фамилия
+            input#fullName(type='text' value=`${item.fullName}`)
+            label e-mail
+            input#email(type='text' value=`${item.email}`)
+            input#buttonSave(type='button' value='Редактировать')
+            input#buttonEdit(type='button' value='Сохранить')

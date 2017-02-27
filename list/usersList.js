@@ -6,7 +6,13 @@ export default class UsersList {
         this._users = users;
         this._render();
         this.onClick = this.onClick.bind(this);
-        this._elem.addEventListener('click', this.onClick);
+        this._elem.querySelector("#list").addEventListener('click', this.onClick);
+        let buttonClear = this._elem.querySelector("#buttonClear");
+        this.clearList = this.clearList.bind(this);
+        buttonClear.addEventListener('click', this.clearList);
+        let buttonAddUser = this._elem.querySelector("#buttonAdd");
+        this.addUser = this.addUser.bind(this);
+        buttonAddUser.addEventListener('click', this.addUser);
         console.log('users list loaded!');
     }
 
@@ -23,7 +29,7 @@ export default class UsersList {
 
         //
         let selectedUser = this._users.find(function(element, index, array){
-            if (liSelectedUser.id == element.id) return element;
+            if (liSelectedUser.id == element._id) return element;
         });
         console.log(selectedUser);
 
@@ -33,6 +39,22 @@ export default class UsersList {
                 value: selectedUser
             }
         }));
+    }
+
+    clearList(){
+      let ul = document.getElementsByTagName('ul')[0];
+      ul.remove();
+      this._elem.dispatchEvent(new CustomEvent('clearDB',{
+        bubbles: true,
+        detail:{}
+      }));
+    }
+
+    addUser(){
+      this._elem.dispatchEvent(new CustomEvent('addUser',{
+        bubbles: true,
+        detail:{}
+      }));
     }
 
     _render(){
@@ -47,6 +69,7 @@ export default class UsersList {
         if(!this._elem){
             this._render();
         }
+        console.log(this._elem);
         return this._elem;
     }
 

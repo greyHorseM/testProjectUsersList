@@ -2,22 +2,53 @@
 
 import UsersList from './list/usersList';
 import UserForm from './form/userForm';
-import {users} from './db/data';
+import UsersDB from './db/data';
+
+let usersDB  = new UsersDB();
+let users = usersDB.getUsersFromDB();
 
 let container = document.querySelector('.users-block');
 
 let usersList = new UsersList({users: users});
-container.appendChild(usersList.getElem());
+usersList = usersList.getElem();
+container.appendChild(usersList);
 
 let userForm = new UserForm({users: users});
 let divUserForm = userForm.getElem();
 container.appendChild(divUserForm);
 
-usersList.getElem().addEventListener('user-select', function(event) {
-    divUserForm.remove();
+usersList.addEventListener('user-select', function(event) {
+    for (let children of container.children){
+      if (children.classList.contains("users-block__user-form")){
+        children.remove();
+      }
+    }
     let selectedUser = event.detail.value;
     userForm.loadUserData(selectedUser);
     container.appendChild(userForm.getElem());
+});
+
+usersList.addEventListener('clearDB', function(event){
+  for (let children of container.children){
+    if (children.classList.contains("users-block__user-form")){
+      children.remove();
+    }
+  }
+  usersDB.clearDB();
+  usersDB  = new UsersDB();
+  users = usersDB.getUsersFromDB();
+  userForm = new UserForm({users: users});
+  divUserForm = userForm.getElem();
+  container.appendChild(divUserForm);
+});
+
+usersList.addEventListener('addUser', function(event){
+  userForm.addUser();
+});
+
+divUserForm.addEventListener('addUserToDB', function(event){
+  let user = event.detail.user;
+  usersDB.addUserToDB({user});
 });
 
 

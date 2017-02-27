@@ -332,10 +332,9 @@ function pug_rethrow(err, filename, lineno, str){
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return users; });
 
-
-let users = [
+/*
+export let users = [
     {
         id: 1,
         name: 'Алекс',
@@ -352,9 +351,46 @@ let users = [
         surname: 'Ольгович'
     }
 ];
+*/
 
+class usersDB{
+  constructor(){
 
+  }
 
+  getUsersFromDB(){
+    let xhr = new XMLHttpRequest();
+    xhr.open('GET', 'http://test-api.javascript.ru/v1/mbaydak/users', false);
+    xhr.send();
+    if(xhr.status != 200){
+      alert( xhr.status + ': ' + xhr.statusText );
+    } else{
+      alert(xhr.responseText);
+      return JSON.parse(xhr.responseText);
+    }
+  }
+
+  addUserToDB({user}){
+    let xhr = new XMLHttpRequest();
+    let jsonNewUser = JSON.stringify({
+      fullName: user.fullName,
+      email: user.email
+    });
+    xhr.open("POST", 'http://test-api.javascript.ru/v1/mbaydak/users', true);
+    xhr.setRequestHeader('Content-type', 'application/json; charset=utf-8');
+    xhr.onload = function(e){
+      return console.log(JSON.parse(xhr.responseText));
+    }
+    xhr.send(jsonNewUser);
+  }
+
+  clearDB(){
+        let xhr = new XMLHttpRequest();
+        xhr.open('DELETE', 'http://test-api.javascript.ru/v1/mbaydak/users', false);
+        xhr.send();
+  }
+}
+/* harmony export (immutable) */ __webpack_exports__["a"] = usersDB;
 
 
 
@@ -374,7 +410,7 @@ let users = [
 class UserForm{
     constructor({users}){
         this._users = users;
-        this._currentUser = {};
+        this._currentUser = {fullName: "", email: ""};
         this._render = this._render.bind(this);
     }
 
@@ -384,10 +420,14 @@ class UserForm{
             item: this._currentUser
         });
         this.elem = tmp.firstElementChild;
+        let buttonSave = this.elem.querySelector("#buttonSave");
+        this.saveUser = this.saveUser.bind(this);
+        buttonSave.addEventListener('click', this.saveUser);
     }
 
     getElem(){
         this._render();
+        console.log(this.elem);
         return this.elem;
     }
 
@@ -395,8 +435,28 @@ class UserForm{
         this._currentUser = selectedUser;
     }
 
+    addUser(){
+      let input = this.elem.querySelector("#fullName");
+      input.focus();
+    }
+
+    saveUser(){
+      console.log("click");
+      let fullName = this.elem.querySelector("#fullName").innerHTML;
+      let email = this.elem.querySelector("#email").innerHTML;
+      this.elem.dispatchEvent(new CustomEvent('addUserToDB',{
+        bubbles: true,
+        detail: {
+          user: {
+            fullName: fullName,
+            email: email
+          }
+        }
+      }));
+    }
 }
 /* harmony export (immutable) */ __webpack_exports__["a"] = UserForm;
+
 
 
 /***/ }),
@@ -416,7 +476,13 @@ class UsersList {
         this._users = users;
         this._render();
         this.onClick = this.onClick.bind(this);
-        this._elem.addEventListener('click', this.onClick);
+        this._elem.querySelector("#list").addEventListener('click', this.onClick);
+        let buttonClear = this._elem.querySelector("#buttonClear");
+        this.clearList = this.clearList.bind(this);
+        buttonClear.addEventListener('click', this.clearList);
+        let buttonAddUser = this._elem.querySelector("#buttonAdd");
+        this.addUser = this.addUser.bind(this);
+        buttonAddUser.addEventListener('click', this.addUser);
         console.log('users list loaded!');
     }
 
@@ -433,7 +499,7 @@ class UsersList {
 
         //
         let selectedUser = this._users.find(function(element, index, array){
-            if (liSelectedUser.id == element.id) return element;
+            if (liSelectedUser.id == element._id) return element;
         });
         console.log(selectedUser);
 
@@ -443,6 +509,22 @@ class UsersList {
                 value: selectedUser
             }
         }));
+    }
+
+    clearList(){
+      let ul = document.getElementsByTagName('ul')[0];
+      ul.remove();
+      this._elem.dispatchEvent(new CustomEvent('clearDB',{
+        bubbles: true,
+        detail:{}
+      }));
+    }
+
+    addUser(){
+      this._elem.dispatchEvent(new CustomEvent('addUser',{
+        bubbles: true,
+        detail:{}
+      }));
     }
 
     _render(){
@@ -457,11 +539,13 @@ class UsersList {
         if(!this._elem){
             this._render();
         }
+        console.log(this._elem);
         return this._elem;
     }
 
 }
 /* harmony export (immutable) */ __webpack_exports__["a"] = UsersList;
+
 
 
 /***/ }),
@@ -482,7 +566,7 @@ class UsersList {
 
 var pug = __webpack_require__(0);
 
-function template(locals) {var pug_html = "", pug_mixins = {}, pug_interp;;var locals_for_with = (locals || {});(function (item) {pug_html = pug_html + "\u003Cdiv class=\"users-block__user-form\"\u003E\u003Cform name=\"user-data\"\u003E\u003Cfieldset\u003E\u003Clegend\u003EДанные пользователя\u003C\u002Flegend\u003E\u003Clabel\u003EИмя\u003C\u002Flabel\u003E\u003Cinput" + (" id=\"fullName\" type=\"text\" readonly"+pug.attr("value", `${item.name}`, true, true)) + "\u003E\u003Clabel\u003EФамилия\u003C\u002Flabel\u003E\u003Cinput" + (" id=\"email\" type=\"text\" readonly"+pug.attr("value", `${item.surname}`, true, true)) + "\u003E\u003Cinput type=\"button\" value=\"Редактировать\"\u003E\u003Cinput type=\"button\" value=\"Сохранить\" disabled\u003E\u003C\u002Ffieldset\u003E\u003C\u002Fform\u003E\u003C\u002Fdiv\u003E";}.call(this,"item" in locals_for_with?locals_for_with.item:typeof item!=="undefined"?item:undefined));;return pug_html;};
+function template(locals) {var pug_html = "", pug_mixins = {}, pug_interp;;var locals_for_with = (locals || {});(function (item) {pug_html = pug_html + "\u003Cdiv class=\"users-block__user-form\"\u003E\u003Cform name=\"user-data\"\u003E\u003Cfieldset\u003E\u003Clegend\u003EДанные пользователя\u003C\u002Flegend\u003E\u003Clabel\u003EИмя и Фамилия\u003C\u002Flabel\u003E\u003Cinput" + (" id=\"fullName\" type=\"text\""+pug.attr("value", `${item.fullName}`, true, true)) + "\u003E\u003Clabel\u003Ee-mail\u003C\u002Flabel\u003E\u003Cinput" + (" id=\"email\" type=\"text\""+pug.attr("value", `${item.email}`, true, true)) + "\u003E\u003Cinput id=\"buttonSave\" type=\"button\" value=\"Редактировать\"\u003E\u003Cinput id=\"buttonEdit\" type=\"button\" value=\"Сохранить\"\u003E\u003C\u002Ffieldset\u003E\u003C\u002Fform\u003E\u003C\u002Fdiv\u003E";}.call(this,"item" in locals_for_with?locals_for_with.item:typeof item!=="undefined"?item:undefined));;return pug_html;};
 module.exports = template;
 
 /***/ }),
@@ -491,21 +575,21 @@ module.exports = template;
 
 var pug = __webpack_require__(0);
 
-function template(locals) {var pug_html = "", pug_mixins = {}, pug_interp;;var locals_for_with = (locals || {});(function (items) {pug_html = pug_html + "\u003Cdiv class=\"users-block__users-list\"\u003E\u003Cinput type=\"button\" value=\"Добавить\"\u003E\u003Cul\u003E";
+function template(locals) {var pug_html = "", pug_mixins = {}, pug_interp;;var locals_for_with = (locals || {});(function (items) {pug_html = pug_html + "\u003Cdiv class=\"users-block__users-list\"\u003E\u003Cinput id=\"buttonAdd\" type=\"button\" value=\"Добавить\"\u003E\u003Cinput id=\"buttonClear\" type=\"button\" value=\"Очистить базу\"\u003E\u003Cul id=\"list\"\u003E";
 // iterate items
 ;(function(){
   var $$obj = items;
   if ('number' == typeof $$obj.length) {
       for (var pug_index0 = 0, $$l = $$obj.length; pug_index0 < $$l; pug_index0++) {
         var item = $$obj[pug_index0];
-pug_html = pug_html + "\u003Cli" + (pug.attr("id", `${item.id}`, true, true)) + "\u003E" + (pug.escape(null == (pug_interp = `${item.name} ${item.surname}`) ? "" : pug_interp)) + "\u003C\u002Fli\u003E";
+pug_html = pug_html + "\u003Cli" + (pug.attr("id", `${item._id}`, true, true)) + "\u003E" + (pug.escape(null == (pug_interp = `${item.fullName} ${item.email}`) ? "" : pug_interp)) + "\u003C\u002Fli\u003E";
       }
   } else {
     var $$l = 0;
     for (var pug_index0 in $$obj) {
       $$l++;
       var item = $$obj[pug_index0];
-pug_html = pug_html + "\u003Cli" + (pug.attr("id", `${item.id}`, true, true)) + "\u003E" + (pug.escape(null == (pug_interp = `${item.name} ${item.surname}`) ? "" : pug_interp)) + "\u003C\u002Fli\u003E";
+pug_html = pug_html + "\u003Cli" + (pug.attr("id", `${item._id}`, true, true)) + "\u003E" + (pug.escape(null == (pug_interp = `${item.fullName} ${item.email}`) ? "" : pug_interp)) + "\u003C\u002Fli\u003E";
     }
   }
 }).call(this);
@@ -534,20 +618,51 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 
 
+let usersDB  = new __WEBPACK_IMPORTED_MODULE_2__db_data__["a" /* default */]();
+let users = usersDB.getUsersFromDB();
+
 let container = document.querySelector('.users-block');
 
-let usersList = new __WEBPACK_IMPORTED_MODULE_0__list_usersList__["a" /* default */]({users: __WEBPACK_IMPORTED_MODULE_2__db_data__["a" /* users */]});
-container.appendChild(usersList.getElem());
+let usersList = new __WEBPACK_IMPORTED_MODULE_0__list_usersList__["a" /* default */]({users: users});
+usersList = usersList.getElem();
+container.appendChild(usersList);
 
-let userForm = new __WEBPACK_IMPORTED_MODULE_1__form_userForm__["a" /* default */]({users: __WEBPACK_IMPORTED_MODULE_2__db_data__["a" /* users */]});
+let userForm = new __WEBPACK_IMPORTED_MODULE_1__form_userForm__["a" /* default */]({users: users});
 let divUserForm = userForm.getElem();
 container.appendChild(divUserForm);
 
-usersList.getElem().addEventListener('user-select', function(event) {
-    divUserForm.remove();
+usersList.addEventListener('user-select', function(event) {
+    for (let children of container.children){
+      if (children.classList.contains("users-block__user-form")){
+        children.remove();
+      }
+    }
     let selectedUser = event.detail.value;
     userForm.loadUserData(selectedUser);
     container.appendChild(userForm.getElem());
+});
+
+usersList.addEventListener('clearDB', function(event){
+  for (let children of container.children){
+    if (children.classList.contains("users-block__user-form")){
+      children.remove();
+    }
+  }
+  usersDB.clearDB();
+  usersDB  = new __WEBPACK_IMPORTED_MODULE_2__db_data__["a" /* default */]();
+  users = usersDB.getUsersFromDB();
+  userForm = new __WEBPACK_IMPORTED_MODULE_1__form_userForm__["a" /* default */]({users: users});
+  divUserForm = userForm.getElem();
+  container.appendChild(divUserForm);
+});
+
+usersList.addEventListener('addUser', function(event){
+  userForm.addUser();
+});
+
+divUserForm.addEventListener('addUserToDB', function(event){
+  let user = event.detail.user;
+  usersDB.addUserToDB({user});
 });
 
 
@@ -646,6 +761,7 @@ let usersDom = new User({
     users: users
 });
 */
+
 
 /***/ })
 /******/ ]);

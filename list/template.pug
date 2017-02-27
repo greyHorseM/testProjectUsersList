@@ -1,5 +1,6 @@
 .users-block__users-list
-    input(type='button' value='Добавить')
-    ul
+    input#buttonAdd(type='button' value='Добавить')
+    input#buttonClear(type='button' value='Очистить базу')
+    ul#list
         each item in items
-            li(id=`${item.id}`)= `${item.name} ${item.surname}`
+            li(id=`${item._id}`)= `${item.fullName} ${item.email}`
